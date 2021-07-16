@@ -1,0 +1,103 @@
+diff --git a/init.toml b/init.toml
+index 95cb91f..1a67fc4 100755
+--- a/init.toml
++++ b/init.toml
+@@ -5,13 +5,20 @@
+ # License: GPLv3
+ #=============================================================================
+ 
++[[layers]]
++  name = "core#statusline"
++
+ # All SpaceVim option below [option] section
++[[layers]]
++  name = "colorscheme"
++
+ [options]
+     # 设置 SpaceVim 主题及背景，默认的主题是 gruvbox，如果你需要使用更
+     # 多的主题，你可以载入 colorscheme 模块
+     # colorscheme = "gruvbox"
+ 
+-    colorscheme = "OceanicNext"
++    # colorscheme = "OceanicNext"
++    colorscheme = "molokai"
+     colorscheme_bg = "dark"
+ 
+     # colorscheme = "NeoSolarized"
+@@ -24,8 +31,8 @@
+     enable_guicolors = true
+     # 设置状态栏上分割符号形状，如果字体安装失败，可以将值设为 "nil" 以
+     # 禁用分割符号，默认为箭头 "arrow"
+-    statusline_separator = "nil"
+-    statusline_separator = "bar"
++    statusline_separator = "arrow"
++    statusline_iseparator = "bar"
+     # 设置顶部标签列表序号类型，有以下五种类型，分别是 0 - 4
+     # 0: 1 ➛ ➊ 
+     # 1: 1 ➛ ➀
+@@ -46,8 +53,25 @@
+     bootstrap_before = "myspacevim#before"
+     bootstrap_after = "myspacevim#after"
+ 
++    # left sections of statusline
++    statusline_left_sections = [
++       'winnr',
++       'filename',
++       'version control info',
++       'search status',
++       'blame'
++    ]
++    # right sections of statusline
++    statusline_right_sections = [
++       'percentage',
++       'time'
++    ]
++
+ # ----------------- SpaceVim 添加的各种 layers ---------------------------------
+ 
++[[layers]]
++  name = "incsearch"
++
+ # 计算器 日历 书签等小工具
+ [[layers]]
+   name = 'tools'
+diff --git a/plugin/coc.vim b/plugin/coc.vim
+index f42af72..fc16cbc 100644
+--- a/plugin/coc.vim
++++ b/plugin/coc.vim
+@@ -44,9 +44,7 @@ call coc#config("languageserver", {
+       \},
+       \})
+ 
+-call coc#config("git.addGBlameToVirtualText", v:true)
+-call coc#config("git.virtualTextPrefix", "👋 ")
+-
++call coc#config("git.addGBlameToBufferVar", v:true)
+ 
+ call coc#config("diagnostic-languageserver.filetypes", {
+       \"sh": "shellcheck",
+@@ -106,6 +104,7 @@ nmap <silent> gd <Plug>(coc-definition)
+ nmap <silent> gy <Plug>(coc-type-definition)
+ nmap <silent> gi <Plug>(coc-implementation)
+ nmap <silent> gr <Plug>(coc-references-used)
++nmap <silent> gc <Plug>(coc-git-commit)
+ 
+ " Use K for show documentation in preview window
+ nnoremap <silent> K :call <SID>show_documentation()<CR>
+@@ -118,6 +117,16 @@ function! s:show_documentation()
+   endif
+ endfunction
+ 
++function! s:lightline_gitblame() abort
++  let blame = get(b:, 'coc_git_blame', '')
++  " return blame
++  return winwidth(0) > 120 ? blame : ''
++endfunction
++
++call SpaceVim#layers#core#statusline#register_sections('blame', function('s:lightline_gitblame'))
++
++autocmd User CocGitStatusChange let &l:statusline = SpaceVim#layers#core#statusline#get(1)
++
+ " Highlight symbol under cursor on CursorHold
+ set updatetime=300
+ autocmd CursorHold * silent call CocActionAsync('highlight')

@@ -1,0 +1,126 @@
+diff --git a/autoload/mark.vim b/autoload/mark.vim
+index 0114b9e..e4a2f93 100644
+--- a/autoload/mark.vim
++++ b/autoload/mark.vim
+@@ -194,15 +194,15 @@ function! s:MarkMatch( indices, expr )
+ endfunction
+ " Initialize mark colors in a (new) window.
+ function! mark#UpdateMark( ... )
+-	for l:Predicate in g:mwExclusionPredicates
+-		if ingo#actions#EvaluateOrFunc(l:Predicate)
++	" for l:Predicate in g:mwExclusionPredicates
++		" if ingo#actions#EvaluateOrFunc(l:Predicate)
+ 			" The window may have had marks applied previously. Clear any
+ 			" existing matches.
+-			call s:MarkMatch(range(s:markNum), '')
++			" call s:MarkMatch(range(s:markNum), '')
+ 
+-			return
+-		endif
+-	endfor
++			" return
++		" endif
++	" endfor
+ 
+ 	if a:0
+ 		call call('s:MarkMatch', a:000)
+@@ -220,7 +220,7 @@ function! mark#UpdateMark( ... )
+ endfunction
+ " Update matches in all windows.
+ function! mark#UpdateScope( ... )
+-	call call('ingo#window#iterate#All', [function('mark#UpdateMark')] + a:000)
++	" call call('ingo#window#iterate#All', [function('mark#UpdateMark')] + a:000)
+ endfunction
+ 
+ function! s:MarkEnable( enable, ...)
+@@ -356,7 +356,7 @@ endfunction
+ " cleared. markGroupNum is the mark group number where the mark was set. It is 0
+ " if the group was cleared.
+ function! mark#DoMark( groupNum, ... )
+-	call ingo#err#Clear()
++	" call ingo#err#Clear()
+ 	if s:markNum <= 0
+ 		" Uh, somehow no mark highlightings were defined. Try to detect them again.
+ 		call mark#Init()
+@@ -512,10 +512,10 @@ function! mark#CurrentMark()
+ 		if ! empty(s:pattern[i])
+ 			let l:matchPattern = (s:IsIgnoreCase(s:pattern[i]) ? '\c' : '\C') . s:pattern[i]
+ 
+-			let [l:startPosition, l:endPosition] = ingo#area#frompattern#GetCurrent(l:matchPattern, {'firstLnum': 1, 'lastLnum': line('$')})
+-			if l:startPosition != [0, 0]
+-				return [s:pattern[i], l:startPosition, i]
+-			endif
++			" let [l:startPosition, l:endPosition] = ingo#area#frompattern#GetCurrent(l:matchPattern, {'firstLnum': 1, 'lastLnum': line('$')})
++			" if l:startPosition != [0, 0]
++				" return [s:pattern[i], l:startPosition, i]
++			" endif
+ 		endif
+ 		let i -= 1
+ 	endwhile
+@@ -882,7 +882,7 @@ function! s:SavePattern( ... )
+ 	let l:savedMarks = mark#ToList()
+ 
+ 	let l:marksVariable = call('s:GetMarksVariable', a:000)
+-	call ingo#plugin#persistence#Store(l:marksVariable, l:savedMarks)
++	" call ingo#plugin#persistence#Store(l:marksVariable, l:savedMarks)
+ 	if ! a:0
+ 		let g:MARK_ENABLED = s:enabled
+ 	endif
+diff --git a/plugin/mark.vim b/plugin/mark.vim
+index deb99c1..43cec57 100644
+--- a/plugin/mark.vim
++++ b/plugin/mark.vim
+@@ -257,42 +257,42 @@ if exists('g:mw_no_mappings')
+ endif
+ 
+ if !hasmapto('<Plug>MarkSet', 'n')
+-	nmap <unique> <Leader>m <Plug>MarkSet
++	nmap <unique> \m <Plug>MarkSet
+ endif
+ if !hasmapto('<Plug>MarkSet', 'x')
+-	xmap <unique> <Leader>m <Plug>MarkSet
++	xmap <unique> \m <Plug>MarkSet
+ endif
+ " No default mapping for <Plug>MarkIWhiteSet.
+ if !hasmapto('<Plug>MarkRegex', 'n')
+-	nmap <unique> <Leader>r <Plug>MarkRegex
++	nmap <unique> \r <Plug>MarkRegex
+ endif
+ if !hasmapto('<Plug>MarkRegex', 'x')
+-	xmap <unique> <Leader>r <Plug>MarkRegex
++	xmap <unique> \r <Plug>MarkRegex
+ endif
+ if !hasmapto('<Plug>MarkClear', 'n')
+-	nmap <unique> <Leader>n <Plug>MarkClear
++	nmap <unique> \c <Plug>MarkClear
+ endif
+ " No default mapping for <Plug>MarkAllClear.
+ " No default mapping for <Plug>MarkConfirmAllClear.
+ " No default mapping for <Plug>MarkToggle.
+ 
+ if !hasmapto('<Plug>MarkSearchCurrentNext', 'n')
+-	nmap <unique> <Leader>* <Plug>MarkSearchCurrentNext
++	nmap <unique> \* <Plug>MarkSearchCurrentNext
+ endif
+ if !hasmapto('<Plug>MarkSearchCurrentPrev', 'n')
+-	nmap <unique> <Leader># <Plug>MarkSearchCurrentPrev
++	nmap <unique> \# <Plug>MarkSearchCurrentPrev
+ endif
+ if !hasmapto('<Plug>MarkSearchAnyNext', 'n')
+-	nmap <unique> <Leader>/ <Plug>MarkSearchAnyNext
++	nmap <unique> \/ <Plug>MarkSearchAnyNext
+ endif
+ if !hasmapto('<Plug>MarkSearchAnyPrev', 'n')
+-	nmap <unique> <Leader>? <Plug>MarkSearchAnyPrev
++	nmap <unique> \? <Plug>MarkSearchAnyPrev
+ endif
+ if !hasmapto('<Plug>MarkSearchNext', 'n')
+-	nmap <unique> * <Plug>MarkSearchNext
++	nmap <unique> \n <Plug>MarkSearchNext
+ endif
+ if !hasmapto('<Plug>MarkSearchPrev', 'n')
+-	nmap <unique> # <Plug>MarkSearchPrev
++	nmap <unique> \p <Plug>MarkSearchPrev
+ endif
+ " No default mapping for <Plug>MarkSearchOrCurNext
+ " No default mapping for <Plug>MarkSearchOrCurPrev

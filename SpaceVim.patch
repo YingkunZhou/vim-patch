@@ -1,0 +1,44 @@
+diff --git a/autoload/SpaceVim/layers/core/statusline.vim b/autoload/SpaceVim/layers/core/statusline.vim
+index 6295a1fa..246f1e54 100644
+--- a/autoload/SpaceVim/layers/core/statusline.vim
++++ b/autoload/SpaceVim/layers/core/statusline.vim
+@@ -101,6 +101,31 @@ let s:modes = {
+ "  TODO This can not be deleted, it is used for toggle section
+ let s:loaded_sections = ['syntax checking', 'major mode', 'minor mode lighters', 'version control info', 'cursorpos']
+ 
++function! s:gitblame() abort
++  let blame = get(b:, 'coc_git_blame', '')
++  " return blame
++  return winwidth(0) > 120 ? blame : ''
++endfunction
++
++autocmd User CocGitStatusChange let &l:statusline = SpaceVim#layers#core#statusline#get(1)
++
++let g:spacevim_statusline_separator = 1
++
++let g:spacevim_statusline_left_sections =
++\ [
++\ 'winnr',
++\ 'filename',
++\ 'version control info',
++\ 'search count',
++\ 'gitblame'
++\ ]
++
++let g:spacevim_statusline_right_sections =
++\ [
++\ 'percentage',
++\ 'time'
++\ ]
++
+ let s:loaded_sections_r = g:spacevim_statusline_right_sections
+ let s:loaded_sections_l = g:spacevim_statusline_left_sections
+ 
+@@ -310,6 +335,7 @@ let s:registed_sections = {
+       \ 'minor mode lighters' : function('s:modes'),
+       \ 'cursorpos' : function('s:cursorpos'),
+       \ 'percentage' : function('s:percentage'),
++      \ 'gitblame' : function('s:gitblame'),
+       \ 'time' : function('s:time'),
+       \ 'date' : function('s:date'),
+       \ 'whitespace' : function('s:whitespace'),
